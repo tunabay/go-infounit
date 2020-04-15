@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    branches:
+      ignore:
+        - /doc-.*/
+    docker:
+      - image: circleci/golang:1.14.2
+    parallelism: 1
+    environment:
+      GOPRIVATE: "github.com/tunabay/"
+    steps:
+      - checkout
+      - run:
+          name: "go lint"
+          command: |
+            ./.ci/scripts/golang-lint.sh
+      - run:
+          name: "go unit tests"
+          command: |
+            go test -gcflags="-e" -timeout=7m -cover -v ./...
+      - store_artifacts:
+          path: /tmp/artifacts
