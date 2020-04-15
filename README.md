@@ -2,6 +2,8 @@
 
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/tunabay/go-infounit/blob/master/LICENSE)
 [![GoDoc](https://godoc.org/github.com/tunabay/go-infounit?status.svg)](https://godoc.org/github.com/tunabay/go-infounit)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tunabay/go-infounit)](https://goreportcard.com/report/github.com/tunabay/go-infounit)
+[![codecov](https://codecov.io/gh/tunabay/go-infounit/branch/master/graph/badge.svg)](https://codecov.io/gh/tunabay/go-infounit)
 
 go-infounit is a Go package providing three data types for units of information:
 
@@ -41,6 +43,8 @@ func main() {
 	fmt.Printf("% .2A\n", rate)  // "114.97 Gibps"
 }
 ```
+[Run in Go Playground](https://play.golang.org/p/aUvaP6JZXeV)
+
 - `%s` is for SI prefixes and `%S` is for binary prefixes.
 - `%a` and `%A` for `BitRate` use the non-standard abbreviation "bps".
 - `' '`(space) flag puts a space between digits and the unit suffix.
