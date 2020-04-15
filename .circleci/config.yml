@@ -18,6 +18,7 @@ jobs:
       - run:
           name: "go unit tests"
           command: |
-            go test -gcflags="-e" -timeout=7m -cover -v ./...
+            go test -gcflags="-e" -timeout=10m -race -coverprofile=coverage.txt -covermode=atomic -v ./...
+            bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: /tmp/artifacts
