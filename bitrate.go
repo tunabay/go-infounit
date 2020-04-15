@@ -196,7 +196,7 @@ const (
 // The following float64 compatible verbs are also supported.
 // They print the float values always in bit/s:
 //
-//  	%b	decimalless scientific notation, e.g. -123456p-78
+// 	%b	decimalless scientific notation, e.g. -123456p-78
 // 	%e	scientific notation, e.g. -1.234456e+78
 // 	%E	scientific notation, e.g. -1.234456E+78
 // 	%f	decimal point but no exponent, e.g. 123.456
