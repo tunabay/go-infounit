@@ -167,37 +167,37 @@ const (
 //
 // For ByteRate type, four custom 'verbs' are implemented:
 //
-//      %s, %a  human-readable format with SI prefix
-//      %S, %A  human-readable format with binary prefix
+// 	%s, %a	human-readable format with SI prefix
+// 	%S, %A	human-readable format with binary prefix
 //
 // %s and %S use "bit/s" unit suffix; e.g. "Mbit/s", "Gibit/s"
 // %a and %A use "bps" unit suffix; e.g. "Mbps", "Gibps"
 //
 // Width and precision can be specified to all of %s, %S, %a and %A:
 //
-//      %s      default width, default precision
-//      %7s     width 7, default precision
-//      %.2s    default width, precision 2
-//      %7.2s   width 7, precision 2
-//      %7.s    width 7, precision 0
+// 	%s	default width, default precision
+// 	%7s	width 7, default precision
+// 	%.2s	default width, precision 2
+// 	%7.2s	width 7, precision 2
+// 	%7.s	width 7, precision 0
 //
 // The following flags are also available for %s, %S, %a and %A:
 //
-//      ' '     (space) print a space between digits and unit; e.g. "12.3 Mbit/s"
-//      #       use long unit name; e.g. "kilobits per second", "mebibits per second"
-//      -       pad with spaces on the right rather than the left (left-justify)
-//      0       pad with leading zeros rather than spaces
+// 	' '	(space) print a space between digits and unit; e.g. "12.3 Mbit/s"
+// 	#	use long unit name; e.g. "kilobits per second", "mebibits per second"
+// 	-	pad with spaces on the right rather than the left (left-justify)
+// 	0	pad with leading zeros rather than spaces
 //
 // %v prints in the default format:
 //
-//      %v      default format, same as "% .1s"
-//      %#v     GoString(); e.g. "BitRate(1234567.89)"
+// 	%v	default format, same as "% .1s"
+// 	%#v	GoString(); e.g. "BitRate(1234567.89)"
 //
 // The following float64 compatible verbs are also supported.
 // They print the float values always in bit/s:
 //
-//      %b      decimalless scientific notation, e.g. -123456p-78
-//      %e      scientific notation, e.g. -1.234456e+78
+//  	%b	decimalless scientific notation, e.g. -123456p-78
+// 	%e	scientific notation, e.g. -1.234456e+78
 // 	%E	scientific notation, e.g. -1.234456E+78
 // 	%f	decimal point but no exponent, e.g. 123.456
 // 	%F	synonym for %f
@@ -344,8 +344,8 @@ func init() {
 //
 // For BitRate type, four custom 'verbs' are implemented:
 //
-//      %s, %u  human-readable formats with both SI and binary prefixes
-//      %S, %U  treat SI prefix as binary prefix; 1 kbit/s = 1024 bit/s
+// 	%s, %u	human-readable formats with both SI and binary prefixes
+// 	%S, %U	treat SI prefix as binary prefix; 1 kbit/s = 1024 bit/s
 //
 // Note that, unlike Format, the %s verb can properly scan expressions with
 // units using both SI and binary prefixes.
@@ -365,7 +365,7 @@ func init() {
 // values without a unit suffix. If it is clear that there is absolutely no unit
 // suffix in the input, the use of these is recommended:
 //
-//      %f, %F  floating point representation
+// 	%f, %F	floating point representation
 //
 // See the package fmt documentation for details.
 func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {

@@ -176,26 +176,26 @@ const (
 //
 // Width and precision can be specified to both %s and %S:
 //
-//	%s	default width, default precision
-//	%7s	width 7, default precision
-//	%.2s	default width, precision 2
-//	%7.2s	width 7, precision 2
-//	%7.s	width 7, precision 0
+// 	%s	default width, default precision
+// 	%7s	width 7, default precision
+// 	%.2s	default width, precision 2
+// 	%7.2s	width 7, precision 2
+// 	%7.s	width 7, precision 0
 //
 // Regardless of the precision specified, while the unit is bit,
 // no decimal parts are printed.
 //
 // The following flags are also available for both %s and %S:
 //
-//	' '	(space) print a space between digits and unit; e.g. "12.3 kbit"
-//	#	use long unit name; e.g. "kilobit", "mebibit"
+// 	' '	(space) print a space between digits and unit; e.g. "12.3 kbit"
+// 	#	use long unit name; e.g. "kilobit", "mebibit"
 // 	-	pad with spaces on the right rather than the left (left-justify)
-//	0	pad with leading zeros rather than spaces
+// 	0	pad with leading zeros rather than spaces
 //
 // %v prints in the default format:
 //
-//	%v	default format, same as "% .1s"
-//	%#v	GoString(); e.g. "BitCount(1024)"
+// 	%v	default format, same as "% .1s"
+// 	%#v	GoString(); e.g. "BitCount(1024)"
 //
 // The following uint64 compatible verbs are also supported.
 // They print the integer values always in bit:
@@ -338,10 +338,10 @@ func init() {
 // unit suffix. If it is clear that there is absolutely no unit suffix in the
 // input, the use of these is recommended:
 //
-// 	%b      base 2
-// 	%o      base 8
-// 	%d      base 10
-// 	%x, %X  base 16
+// 	%b	base 2
+// 	%o	base 8
+// 	%d	base 10
+// 	%x, %X	base 16
 //
 // See the package fmt documentation for details.
 func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {

@@ -18,26 +18,26 @@ Scanf family functions in the package fmt.
 	import "github.com/tunabay/go-infounit"
 
 	size := infounit.Megabyte * 2500
-	fmt.Printf("% s\n", size)    // "2.5 GB"
-	fmt.Printf("% .1S\n", size)  // "2.3 GiB"
-	fmt.Printf("%# .2s\n", size) // "2.50 gigabytes"
-	fmt.Printf("%# .3S\n", size) // "2.328 gibibytes"
-	fmt.Printf("%d\n", size)     // "2500000000"
+	fmt.Printf("% s\n", size)     // "2.5 GB"
+	fmt.Printf("% .1S\n", size)   // "2.3 GiB"
+	fmt.Printf("%# .2s\n", size)  // "2.50 gigabytes"
+	fmt.Printf("%# .3S\n", size)  // "2.328 gibibytes"
+	fmt.Printf("%d\n", size)      // "2500000000"
 
 	bits := infounit.Kilobit * 32
-	fmt.Printf("% s\n", bits)    // "32 kbit"
-	fmt.Printf("% S\n", bits)    // "31.25 Kibit"
-	fmt.Printf("%# .2s\n", bits) // "32.00 kilobits"
-	fmt.Printf("%# .3S\n", bits) // "31.250 kibibits"
-	fmt.Printf("%d\n", bits)     // "32000"
+	fmt.Printf("% s\n", bits)     // "32 kbit"
+	fmt.Printf("% S\n", bits)     // "31.25 Kibit"
+	fmt.Printf("%# .2s\n", bits)  // "32.00 kilobits"
+	fmt.Printf("%# .3S\n", bits)  // "31.250 kibibits"
+	fmt.Printf("%d\n", bits)      // "32000"
 
 	rate := infounit.GigabitPerSecond * 123.45
-	fmt.Printf("% s\n", rate)    // "123.45 Gbit/s"
-	fmt.Printf("% .3S\n", rate)  // "114.972 Gibit/s"
-	fmt.Printf("%# .1s\n", rate) // "123.5 gigabits per second"
-	fmt.Printf("%# .2S\n", rate) // "114.97 gibibits per second"
-	fmt.Printf("% .1a\n", rate)  // "123.5 Gbps"
-	fmt.Printf("% .2A\n", rate)  // "114.97 Gibps"
+	fmt.Printf("% s\n", rate)     // "123.45 Gbit/s"
+	fmt.Printf("% .3S\n", rate)   // "114.972 Gibit/s"
+	fmt.Printf("%# .1s\n", rate)  // "123.5 gigabits per second"
+	fmt.Printf("%# .2S\n", rate)  // "114.97 gibibits per second"
+	fmt.Printf("% .1a\n", rate)   // "123.5 Gbps"
+	fmt.Printf("% .2A\n", rate)   // "114.97 Gibps"
 
 Each data type also provides methods such as scanning and unit conversion.
 
@@ -73,8 +73,8 @@ fmt.Errorf, and functions deriverd from them.
 
 For ByteCount type, two custom 'verbs' are implemented:
 
-	%s  human readable format with SI prefix
-	%S  human readable format with binary prefix
+	%s	human readable format with SI prefix
+	%S	human readable format with binary prefix
 
 By using these, the same value can be formatted with both SI and binary
 prefixes:
@@ -108,7 +108,7 @@ values.
 	var file string
 	var size infounit.ByteCount
 	_, _ = fmt.Sscanf("%s is %s", "test.png is 5 kB", &file, &size)
-	fmt.Println(file, size) // test.png 5.0 kB
+	fmt.Println(file, size)  // test.png 5.0 kB
 
 Note that unlike Printf, the %s verb properly scans units with both SI and
 binary prefixes. So it is usually fine to use only the %s verb to scan.
