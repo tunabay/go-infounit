@@ -236,7 +236,7 @@ func TestBitRate_Scan_1(t *testing.T) {
 				t.Errorf("src='%s', fmt='%s': want: %#v, got: %#v", c.src, c.fmt, c.br, br)
 				continue
 			}
-			t.Logf("src='%s', fmt='%s': OK: %s", c.src, c.fmt, br)
+			// t.Logf("src='%s', fmt='%s': OK: %s", c.src, c.fmt, br)
 		default: // expecting error
 			switch {
 			case err == nil:
@@ -246,7 +246,7 @@ func TestBitRate_Scan_1(t *testing.T) {
 				t.Errorf("src='%s', fmt='%s': error want: %s, got: %s", c.src, c.fmt, c.es, err.Error())
 				continue
 			}
-			t.Logf("src='%s', fmt='%s': OK: %s", c.src, c.fmt, err.Error())
+			// t.Logf("src='%s', fmt='%s': OK: %s", c.src, c.fmt, err.Error())
 		}
 	}
 }

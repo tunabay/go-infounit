@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"sync/atomic"
+	"time"
 )
 
 // BitCount represents a non-negative bit count. BitCount values can be
@@ -74,6 +75,31 @@ func (bc BitCount) ConvertRound(unit BitCount, precision int) float64 {
 	p := math.Pow(10, float64(precision))
 	v := math.Round(float64(bc)*p/float64(unit)) / p
 	return v
+}
+
+// CalcTime calculates the duration it takes to transfer or process the number
+// of bits at the specified rate.
+func (bc BitCount) CalcTime(rate BitRate) (time.Duration, error) {
+	if rate == 0 {
+		return 0, ErrDivZeroBitRate
+	}
+	ns := float64(bc) * float64(time.Second) / float64(rate)
+	if ns < float64(math.MinInt64) || float64(math.MaxInt64) < ns {
+		return 0, ErrOutOfRange
+	}
+	return time.Duration(ns), nil
+}
+
+// CalcBitRate calculates the bit rate when the number of bits is transferred or
+// processed in the specified duration.
+func (bc BitCount) CalcBitRate(duration time.Duration) BitRate {
+	if duration == 0 {
+		if bc == 0 {
+			return 0
+		}
+		return BitRate(math.Inf(+1))
+	}
+	return BitRate(float64(bc) / duration.Seconds())
 }
 
 // AtomicAddBitCount atomically adds delta to *addr and returns the new value.

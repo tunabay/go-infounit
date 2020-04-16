@@ -5,7 +5,9 @@
 package infounit_test
 
 import (
+	"math"
 	"testing"
+	"time"
 
 	"github.com/tunabay/go-infounit"
 )
@@ -94,6 +96,65 @@ func TestByteCount_BitCount(t *testing.T) {
 		}
 		if bits != c.bits {
 			t.Errorf(`%d: want: %d, got: %d`, c.b, c.bits, bits)
+		}
+	}
+}
+
+//
+func TestByteCount_CalcTime(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		b   infounit.ByteCount
+		r   infounit.BitRate
+		t   time.Duration
+		err error
+	}{
+		{0, infounit.BitPerSecond * 1, time.Second * 0, nil},
+		{1000, infounit.KilobitPerSecond * 1, time.Second * 8, nil},
+		{infounit.Megabyte, infounit.KilobitPerSecond, time.Second * 8000, nil},
+		{infounit.Terabyte, infounit.KilobitPerSecond, time.Second * 8000000000, nil},
+		{1, 0, 0, infounit.ErrDivZeroBitRate},
+		{infounit.Exabyte * 10, infounit.BitPerSecond, 0, infounit.ErrOutOfRange},
+	}
+
+	for _, c := range tc {
+		tm, err := c.b.CalcTime(c.r)
+		// t.Logf(`%v in %v: %s, %s"`, c.b, c.r, tm, err)
+		if err != c.err {
+			t.Errorf(`%v in %v: want(err): %s, got(err): %s`, c.b, c.r, c.err, err)
+		}
+		if tm != c.t {
+			t.Errorf(`%v in %v: want: %s, got: %s`, c.b, c.r, c.t, tm)
+		}
+	}
+}
+
+//
+func TestByteCount_CalcBitRate(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		b infounit.ByteCount
+		t time.Duration
+		r infounit.BitRate
+	}{
+		{0, time.Second, 0},
+		{1000, time.Second, 8000},
+		{infounit.Megabyte, time.Second * 8000, infounit.KilobitPerSecond},
+		{infounit.Byte, time.Second * 10, infounit.BitPerSecond * 0.8},
+		{1000, 0, infounit.BitRate(math.Inf(+1))},
+		{0, 0, 0},
+	}
+
+	for _, c := range tc {
+		rate := c.b.CalcBitRate(c.t)
+		// t.Logf(`%v in %v: %v"`, c.b, c.t, rate)
+		switch {
+		case c.r.IsInf(+1) && !rate.IsInf(+1):
+			t.Errorf(`%v in %v: want: %v, got: %v`, c.b, c.t, c.r, rate)
+		case rate != c.r:
+			t.Errorf(`%v in %v: want: %v, got: %v`, c.b, c.t, c.r, rate)
 		}
 	}
 }
