@@ -147,3 +147,22 @@ func ExampleBitCount_Format_printf() {
 	// 100000
 	// 186a0
 }
+
+//
+func ExampleBitCount_Scan_sscanf() {
+	src := []string{
+		"kawaii.png is 1.23Mbit",
+		"work.xlsx is 234.56 kibibits",
+		"huge.zip is 999 Tbit",
+	}
+	for _, s := range src {
+		var file string
+		var size infounit.BitCount
+		_, _ = fmt.Sscanf(s, "%s is %s", &file, &size)
+		fmt.Println(file, size)
+	}
+	// Output:
+	// kawaii.png 1.2 Mbit
+	// work.xlsx 240.2 kbit
+	// huge.zip 999.0 Tbit
+}
