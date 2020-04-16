@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"sync/atomic"
+	"time"
 	"unsafe"
 )
 
@@ -54,13 +55,6 @@ func (br BitRate) GoString() string {
 	return fmt.Sprintf("BitRate(%s)", strconv.FormatFloat(float64(br), 'f', -1, 64))
 }
 
-// EstimateTimeForByteCount(total ByteCount) (time.Duration, error)
-// EstimateTimeForBitCount(total BitCount) (time.Duration, error)
-// EstimateByteCount(duration time.Duration) ByteCount
-// EstimateBitCount(duration time.Duration) BitCount
-// BitRateFromByteCount(total ByteCount, duration time.Duration) BitRate
-// BitRateFromBitCount(total BitCount, duration time.Duration) BitRate
-
 // IsInf reports whether the bit rate value is an infinity, according to sign.
 // If sign > 0, IsInf reports whether the bit rate value is positive infinity.
 // If sign < 0, IsInf reports whether the bit rate value is negative infinity.
@@ -88,6 +82,46 @@ func (br BitRate) ConvertRound(unit BitRate, precision int) float64 {
 	p := math.Pow(10, float64(precision))
 	v := math.Round(p*float64(br)/float64(unit)) / p
 	return v
+}
+
+// CalcByteCount calculates the number of bytes that can be transferred or
+// processed in the specified duration at this bit rate.
+func (br BitRate) CalcByteCount(duration time.Duration) (ByteCount, error) {
+	switch {
+	case duration == 0:
+		return 0, nil
+	case br.IsNaN():
+		return 0, nil
+	case duration < 0 && 0 <= br:
+		return 0, ErrOutOfRange
+	case br.IsInf(0):
+		return 0, ErrOutOfRange
+	}
+	bc := float64(br) * duration.Seconds() / 8
+	if bc < 0 || float64(math.MaxUint64) < bc {
+		return 0, ErrOutOfRange
+	}
+	return ByteCount(bc), nil
+}
+
+// CalcBitCount calculates the number of bits that can be transferred or
+// processed in the specified duration at this bit rate.
+func (br BitRate) CalcBitCount(duration time.Duration) (BitCount, error) {
+	switch {
+	case duration == 0:
+		return 0, nil
+	case br.IsNaN():
+		return 0, nil
+	case duration < 0 && 0 <= br:
+		return 0, ErrOutOfRange
+	case br.IsInf(0):
+		return 0, ErrOutOfRange
+	}
+	bc := float64(br) * duration.Seconds()
+	if bc < 0 || float64(math.MaxUint64) < bc {
+		return 0, ErrOutOfRange
+	}
+	return BitCount(bc), nil
 }
 
 // AtomicLoadBitRate atomically loads *addr. A wrapper function for the

@@ -147,3 +147,22 @@ func ExampleByteCount_Format_printf() {
 	// 100000
 	// 186a0
 }
+
+//
+func ExampleByteCount_Scan_sscanf() {
+	src := []string{
+		"kawaii.png is 1.23MB",
+		"work.xlsx is 234.56 kibibytes",
+		"huge.zip is 999 TB",
+	}
+	for _, s := range src {
+		var file string
+		var size infounit.ByteCount
+		_, _ = fmt.Sscanf(s, "%s is %s", &file, &size)
+		fmt.Println(file, size)
+	}
+	// Output:
+	// kawaii.png 1.2 MB
+	// work.xlsx 240.2 kB
+	// huge.zip 999.0 TB
+}

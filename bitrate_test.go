@@ -7,6 +7,7 @@ package infounit_test
 import (
 	"math"
 	"testing"
+	"time"
 
 	"github.com/tunabay/go-infounit"
 )
@@ -119,6 +120,78 @@ func TestBitRate_IsNaN(t *testing.T) {
 		nan := c.b.IsNaN()
 		if nan != c.nan {
 			t.Errorf(`%e: want: %t, got: %t`, c.b, c.nan, nan)
+		}
+	}
+}
+
+//
+func TestBitRate_CalcByteCount(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		r   infounit.BitRate
+		t   time.Duration
+		b   infounit.ByteCount
+		err error
+	}{
+		{0, 0, 0, nil},
+		{8000, time.Second, 1000, nil},
+		{infounit.KilobitPerSecond, time.Second * 8000, infounit.Megabyte, nil},
+		{infounit.BitPerSecond * 0.8, time.Second * 10, infounit.Byte, nil},
+		{infounit.KilobitPerSecond, -time.Second * 10, 0, infounit.ErrOutOfRange},
+		{1000, 0, 0, nil},
+		{infounit.BitRate(math.NaN()), 1000, 0, nil},
+		{1000, -1000, 0, infounit.ErrOutOfRange},
+		{0, -1000, 0, infounit.ErrOutOfRange},
+		{-8000, -time.Second, 1000, nil},
+		{infounit.BitRate(math.Inf(+1)), time.Second, 0, infounit.ErrOutOfRange},
+		{infounit.BitRate(math.Inf(-1)), time.Second, 0, infounit.ErrOutOfRange},
+	}
+
+	for _, c := range tc {
+		bc, err := c.r.CalcByteCount(c.t)
+		// t.Logf(`%v x %v: %v, %s"`, c.r, c.t, bc, err)
+		if err != c.err {
+			t.Errorf(`%v x %v: want(err): %v, got(err): %v`, c.r, c.t, c.err, err)
+		}
+		if bc != c.b {
+			t.Errorf(`%v x %v: want: %v, got: %v`, c.r, c.t, c.b, bc)
+		}
+	}
+}
+
+//
+func TestBitRate_CalcBitCount(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		r   infounit.BitRate
+		t   time.Duration
+		b   infounit.BitCount
+		err error
+	}{
+		{0, 0, 0, nil},
+		{8000, time.Second, 8000, nil},
+		{infounit.KilobitPerSecond, time.Second * 1000, infounit.Megabit, nil},
+		{infounit.BitPerSecond * 0.8, time.Second * 10, infounit.Bit * 8, nil},
+		{infounit.KilobitPerSecond, -time.Second * 10, 0, infounit.ErrOutOfRange},
+		{1000, 0, 0, nil},
+		{infounit.BitRate(math.NaN()), 1000, 0, nil},
+		{1000, -1000, 0, infounit.ErrOutOfRange},
+		{0, -1000, 0, infounit.ErrOutOfRange},
+		{-8000, -time.Second, 8000, nil},
+		{infounit.BitRate(math.Inf(+1)), time.Second, 0, infounit.ErrOutOfRange},
+		{infounit.BitRate(math.Inf(-1)), time.Second, 0, infounit.ErrOutOfRange},
+	}
+
+	for _, c := range tc {
+		bc, err := c.r.CalcBitCount(c.t)
+		// t.Logf(`%v x %v: %v, %s"`, c.r, c.t, bc, err)
+		if err != c.err {
+			t.Errorf(`%v x %v: want(err): %v, got(err): %v`, c.r, c.t, c.err, err)
+		}
+		if bc != c.b {
+			t.Errorf(`%v x %v: want: %v, got: %v`, c.r, c.t, c.b, bc)
 		}
 	}
 }
