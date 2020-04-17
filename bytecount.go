@@ -511,3 +511,25 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 	}
 	return nil
 }
+
+// ParseByteCount converts a human-readable string representation into a
+// ByteCount value. The human-readable string is a decimal number with a unit
+// suffix. SI and binary prefixes are correctly recognized.
+func ParseByteCount(s string) (ByteCount, error) {
+	var v ByteCount
+	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
+		return 0, fmt.Errorf("invalid byte count: %s", s)
+	}
+	return v, nil
+}
+
+// ParseByteCountBinary is the same as ParseByteCount except that it treats the
+// SI prefixes as binary prefixes. That is, it parses "100 kB" as 100 KiB
+// (=102400 B).
+func ParseByteCountBinary(s string) (ByteCount, error) {
+	var v ByteCount
+	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
+		return 0, fmt.Errorf("invalid byte count: %s", s)
+	}
+	return v, nil
+}

@@ -546,3 +546,25 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 	}
 	return nil
 }
+
+// ParseBitRate converts a human-readable string representation into a BitRate
+// value. The human-readable string is a decimal number with a unit suffix. SI
+// and binary prefixes are correctly recognized.
+func ParseBitRate(s string) (BitRate, error) {
+	var v BitRate
+	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
+		return 0, fmt.Errorf("invalid bit rate: %s", s)
+	}
+	return v, nil
+}
+
+// ParseBitRateBinary is the same as ParseBitRate except that it treats the SI
+// prefixes as binary prefixes. That is, it parses "100 kbit/s" as 100 Kibit/s
+// (=102400 bit/s).
+func ParseBitRateBinary(s string) (BitRate, error) {
+	var v BitRate
+	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
+		return 0, fmt.Errorf("invalid bit rate: %s", s)
+	}
+	return v, nil
+}
