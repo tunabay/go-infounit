@@ -32,6 +32,10 @@ func TestBitRate_Scan_1(t *testing.T) {
 		{"9999.9999 bit/s", "%u", infounit.BitPerSecond * 9999.9999, ""},
 		{"9999.9999 bit/s", "%U", infounit.BitPerSecond * 9999.9999, ""},
 
+		{"333.33 bit/s", "%s", infounit.BitPerSecond * 333.33, ""},
+		{"+333.33 bit/s", "%s", infounit.BitPerSecond * 333.33, ""},
+		{"-333.33 bit/s", "%s", infounit.BitPerSecond * -333.33, ""},
+
 		{"110", "%u", infounit.BitPerSecond * 110, ""},
 		{"110", "%U", infounit.BitPerSecond * 110, ""},
 		{"110BIT/S", "%u", infounit.BitPerSecond * 110, ""},
@@ -201,7 +205,7 @@ func TestBitRate_Scan_1(t *testing.T) {
 		{"999", "%S", 0, "%S: no unit suffix: EOF"},
 		{"999  Gbit/s", "%s", 0, "%s: no unit suffix"}, // doubled space
 		{"999 666", "%s", 0, "%s: invalid unit expr: 666"},
-		{"+9999", "%s", 0, "%s: invalid expr: +9999"},
+		{"*9999", "%s", 0, "%s: invalid expr: *9999"},
 		{"999-666", "%s", 0, "%s: invalid expr: 999-666"},
 		{"999 megabits per second", "%u", infounit.BitPerSecond * 999, ""}, // %u does not read "megabits..."
 		{"999 megabits per second", "%U", infounit.BitPerSecond * 999, ""}, // %U does not read "megabits..."
