@@ -282,7 +282,7 @@ func (br BitRate) Format(s fmt.State, verb rune) {
 
 	case 'b', 'e', 'E', 'f', 'F', 'g', 'G', 'x', 'X':
 		tFmt := "%"
-		for _, flag := range []rune{' ', '#', '+', '-', '0'} {
+		for _, flag := range " #+-0" {
 			// fmt.Printf("FLAG[%c]\n", flag)
 			if s.Flag(int(flag)) {
 				tFmt += string(flag)
