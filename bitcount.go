@@ -172,12 +172,8 @@ func (bc *BitCount) MarshalText() ([]byte, error) {
 // implements the TextUnmarshaler interface in the package encoding.
 func (bc *BitCount) UnmarshalText(text []byte) error {
 	var val BitCount
-	n, err := fmt.Sscanf(string(text), "%s", &val)
-	switch {
-	case err != nil:
+	if _, err := fmt.Sscanf(string(text), "%s", &val); err != nil {
 		return err
-	case n != 1:
-		return fmt.Errorf("invalid input")
 	}
 	AtomicStoreBitCount(bc, val)
 	return nil
@@ -381,12 +377,8 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 		}
 		tFmt += string(verb)
 		ptr := (*uint64)(bc)
-		n, err := fmt.Fscanf(state, tFmt, ptr)
-		switch {
-		case err != nil:
+		if _, err := fmt.Fscanf(state, tFmt, ptr); err != nil {
 			return fmt.Errorf("%%%c: no input: %w", verb, err)
-		case n != 1:
-			return fmt.Errorf("%%%c: no input", verb)
 		}
 
 	case 's', 'S', 'u', 'U':
@@ -506,4 +498,26 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 
 	}
 	return nil
+}
+
+// ParseBitCount converts a human-readable string representation into a BitCount
+// value. The human-readable string is a decimal number with a unit suffix. SI
+// and binary prefixes are correctly recognized.
+func ParseBitCount(s string) (BitCount, error) {
+	var v BitCount
+	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
+		return 0, fmt.Errorf("invalid bit count: %s", s)
+	}
+	return v, nil
+}
+
+// ParseBitCountBinary is the same as ParseBitCount except that it treats the SI
+// prefixes as binary prefixes. That is, it parses "100 kbit" as 100 Kibit
+// (=102400 bit).
+func ParseBitCountBinary(s string) (BitCount, error) {
+	var v BitCount
+	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
+		return 0, fmt.Errorf("invalid bit count: %s", s)
+	}
+	return v, nil
 }

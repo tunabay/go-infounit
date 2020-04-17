@@ -158,3 +158,70 @@ func TestByteCount_CalcBitRate(t *testing.T) {
 		}
 	}
 }
+
+//
+func TestParseByteCount(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		s string
+		b infounit.ByteCount
+		e string
+	}{
+		{"", 0, "invalid byte count: "},
+		{"1B", 1, ""},
+		{"9 B", 9, ""},
+		{"1.23 kB", 1230, ""},
+		{"-1 kB", 0, "invalid byte count: -1 kB"},
+	}
+
+	for _, c := range tc {
+		bc, err := infounit.ParseByteCount(c.s)
+		// t.Logf(`%s: %v, %v"`, c.s, bc, err)
+		switch {
+		case c.e != "" && err == nil:
+			t.Errorf(`%s: want(err): %s, got(err): nil"`, c.s, c.e)
+		case c.e != "" && err.Error() != c.e:
+			t.Errorf(`%s: want(err): %s, got(err): %v"`, c.s, c.e, err)
+		case c.e == "" && err != nil:
+			t.Errorf(`%s: want(err): nil, got(err): %v"`, c.s, err)
+		}
+		if bc != c.b {
+			t.Errorf(`%s: want: %d, got: %d"`, c.s, c.b, bc)
+		}
+	}
+}
+
+//
+func TestParseByteCountBinary(t *testing.T) {
+	t.Parallel()
+
+	tc := []struct {
+		s string
+		b infounit.ByteCount
+		e string
+	}{
+		{"", 0, "invalid byte count: "},
+		{"1B", 1, ""},
+		{"9 B", 9, ""},
+		{"1 kB", 1024, ""},
+		{"1.5 kB", 1536, ""},
+		{"-1 kB", 0, "invalid byte count: -1 kB"},
+	}
+
+	for _, c := range tc {
+		bc, err := infounit.ParseByteCountBinary(c.s)
+		// t.Logf(`%s: %v, %v"`, c.s, bc, err)
+		switch {
+		case c.e != "" && err == nil:
+			t.Errorf(`%s: want(err): %s, got(err): nil"`, c.s, c.e)
+		case c.e != "" && err.Error() != c.e:
+			t.Errorf(`%s: want(err): %s, got(err): %v"`, c.s, c.e, err)
+		case c.e == "" && err != nil:
+			t.Errorf(`%s: want(err): nil, got(err): %v"`, c.s, err)
+		}
+		if bc != c.b {
+			t.Errorf(`%s: want: %d, got: %d"`, c.s, c.b, bc)
+		}
+	}
+}
