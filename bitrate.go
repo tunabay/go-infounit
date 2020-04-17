@@ -325,8 +325,8 @@ var (
 //
 func init() {
 	bitRateScanTokenRe = []*regexp.Regexp{
-		regexp.MustCompile(`(?i)^(nan|[+-]inf|([0-9]*)(\.[0-9]+)?)([a-z/]*)$`), // 1:num, 2:int, 3:frac, 4:unit
-		regexp.MustCompile(`(?i)^([a-z/]+)$`),                                  // 1:unit
+		regexp.MustCompile(`(?i)^(nan|[+-]inf|([+-]?[0-9]*)(\.[0-9]+)?)([a-z/]*)$`), // 1:num, 2:int, 3:frac, 4:unit
+		regexp.MustCompile(`(?i)^([a-z/]+)$`),                                       // 1:unit
 		regexp.MustCompile(`(?i)^per$`),
 		regexp.MustCompile(`(?i)^sec(ond)?$`),
 	}
