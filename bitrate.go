@@ -173,12 +173,8 @@ func (br *BitRate) MarshalText() ([]byte, error) {
 // implements the TextUnmarshaler interface in the package encoding.
 func (br *BitRate) UnmarshalText(text []byte) error {
 	var val BitRate
-	n, err := fmt.Sscanf(string(text), "%s", &val)
-	switch {
-	case err != nil:
+	if _, err := fmt.Sscanf(string(text), "%s", &val); err != nil {
 		return err
-	case n != 1:
-		return fmt.Errorf("invalid input")
 	}
 	AtomicStoreBitRate(br, val)
 	return nil
@@ -413,12 +409,8 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 		}
 		tFmt += string(verb)
 		ptr := (*float64)(br)
-		n, err := fmt.Fscanf(state, tFmt, ptr)
-		switch {
-		case err != nil:
+		if _, err := fmt.Fscanf(state, tFmt, ptr); err != nil {
 			return fmt.Errorf("%%%c: no input: %w", verb, err)
-		case n != 1:
-			return fmt.Errorf("%%%c: no input", verb)
 		}
 
 	case 's', 'S', 'u', 'U':

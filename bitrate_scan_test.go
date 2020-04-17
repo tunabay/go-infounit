@@ -226,15 +226,12 @@ func TestBitRate_Scan_1(t *testing.T) {
 
 	for _, c := range tc {
 		var br infounit.BitRate
-		n, err := fmt.Sscanf(c.src, c.fmt, &br)
+		_, err := fmt.Sscanf(c.src, c.fmt, &br)
 		switch c.es {
 		case "": // expecting no error
 			switch {
 			case err != nil:
 				t.Errorf("src='%s', fmt='%s': %s", c.src, c.fmt, err)
-				continue
-			case n != 1:
-				t.Errorf("src='%s', fmt='%s': n(%d) != 1", c.src, c.fmt, n)
 				continue
 			case br != c.br:
 				t.Errorf("src='%s', fmt='%s': want: %#v, got: %#v", c.src, c.fmt, c.br, br)

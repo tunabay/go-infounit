@@ -208,15 +208,12 @@ func TestBitCount_Scan_1(t *testing.T) {
 
 	for _, c := range tc {
 		var bc infounit.BitCount
-		n, err := fmt.Sscanf(c.src, c.fmt, &bc)
+		_, err := fmt.Sscanf(c.src, c.fmt, &bc)
 		switch c.es {
 		case "": // expecting no error
 			switch {
 			case err != nil:
 				t.Errorf("src='%s', fmt='%s': %s", c.src, c.fmt, err)
-				continue
-			case n != 1:
-				t.Errorf("src='%s', fmt='%s': n(%d) != 1", c.src, c.fmt, n)
 				continue
 			case bc != c.bc:
 				t.Errorf("src='%s', fmt='%s': want: %#v, got: %#v", c.src, c.fmt, c.bc, bc)

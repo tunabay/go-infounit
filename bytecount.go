@@ -174,12 +174,8 @@ func (bc *ByteCount) MarshalText() ([]byte, error) {
 // This implements the TextUnmarshaler interface in the package encoding.
 func (bc *ByteCount) UnmarshalText(text []byte) error {
 	var val ByteCount
-	n, err := fmt.Sscanf(string(text), "%s", &val)
-	switch {
-	case err != nil:
+	if _, err := fmt.Sscanf(string(text), "%s", &val); err != nil {
 		return err
-	case n != 1:
-		return fmt.Errorf("invalid input")
 	}
 	AtomicStoreByteCount(bc, val)
 	return nil
@@ -383,12 +379,8 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 		}
 		tFmt += string(verb)
 		ptr := (*uint64)(bc)
-		n, err := fmt.Fscanf(state, tFmt, ptr)
-		switch {
-		case err != nil:
+		if _, err := fmt.Fscanf(state, tFmt, ptr); err != nil {
 			return fmt.Errorf("%%%c: no input: %w", verb, err)
-		case n != 1:
-			return fmt.Errorf("%%%c: no input", verb)
 		}
 
 	case 's', 'S', 'u', 'U':
