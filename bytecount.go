@@ -450,7 +450,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 			}
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 			}
 			*ptr = numVal
 			return nil
@@ -459,7 +459,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 		if isInt { // integer
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 			}
 			for _, unit := range byteCountScanUnitRe {
 				if unit.re.MatchString(unitExpr) {
@@ -478,7 +478,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 		// float
 		numVal, err := strconv.ParseFloat(numExpr, 64)
 		if err != nil {
-			return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+			return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 		}
 		for _, unit := range byteCountScanUnitRe {
 			if unit.re.MatchString(unitExpr) {
@@ -505,7 +505,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 func ParseByteCount(s string) (ByteCount, error) {
 	var v ByteCount
 	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
-		return 0, fmt.Errorf("invalid byte count: %s", s)
+		return 0, fmt.Errorf("invalid byte count: %s: %w", s, err)
 	}
 	return v, nil
 }
@@ -516,7 +516,7 @@ func ParseByteCount(s string) (ByteCount, error) {
 func ParseByteCountBinary(s string) (ByteCount, error) {
 	var v ByteCount
 	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
-		return 0, fmt.Errorf("invalid byte count: %s", s)
+		return 0, fmt.Errorf("invalid byte count: %s: %w", s, err)
 	}
 	return v, nil
 }

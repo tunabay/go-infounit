@@ -446,7 +446,7 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 			}
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid bit count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid bit count: %s: %w", verb, numExpr, err)
 			}
 			*ptr = numVal
 			return nil
@@ -455,7 +455,7 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 		if isInt { // integer
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid bit count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid bit count: %s: %w", verb, numExpr, err)
 			}
 			for _, unit := range bitCountScanUnitRe {
 				if unit.re.MatchString(unitExpr) {
@@ -474,7 +474,7 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 		// float
 		numVal, err := strconv.ParseFloat(numExpr, 64)
 		if err != nil {
-			return fmt.Errorf("%%%c: invalid bit count: %s: %s", verb, numExpr, err)
+			return fmt.Errorf("%%%c: invalid bit count: %s: %w", verb, numExpr, err)
 		}
 		for _, unit := range bitCountScanUnitRe {
 			if unit.re.MatchString(unitExpr) {
@@ -501,7 +501,7 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 func ParseBitCount(s string) (BitCount, error) {
 	var v BitCount
 	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
-		return 0, fmt.Errorf("invalid bit count: %s", s)
+		return 0, fmt.Errorf("invalid bit count: %s: %w", s, err)
 	}
 	return v, nil
 }
@@ -512,7 +512,7 @@ func ParseBitCount(s string) (BitCount, error) {
 func ParseBitCountBinary(s string) (BitCount, error) {
 	var v BitCount
 	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
-		return 0, fmt.Errorf("invalid bit count: %s", s)
+		return 0, fmt.Errorf("invalid bit count: %s: %w", s, err)
 	}
 	return v, nil
 }

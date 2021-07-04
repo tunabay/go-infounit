@@ -6,6 +6,7 @@ package infounit
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -492,7 +493,7 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 		for i := 0; i < 2; i++ {
 			sp, n, err := state.ReadRune() // read only one space
 			switch {
-			case err == io.EOF:
+			case errors.Is(err, io.EOF):
 				return fmt.Errorf("%%%c: unknown unit: %s", verb, eSuf)
 			case err != nil:
 				return fmt.Errorf("%%%c: invalid unit suffix: %s: %w", verb, eSuf, err)
@@ -503,7 +504,7 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 			}
 			token34Bytes, err := state.Token(false, nil)
 			switch {
-			case err == io.EOF:
+			case errors.Is(err, io.EOF):
 				return fmt.Errorf("%%%c: unknown unit: %s", verb, eSuf)
 			case err != nil:
 				return fmt.Errorf("%%%c: invalid unit suffix: %s: %w", verb, eSuf, err)
@@ -540,7 +541,7 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 func ParseBitRate(s string) (BitRate, error) {
 	var v BitRate
 	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
-		return 0, fmt.Errorf("invalid bit rate: %s", s)
+		return 0, fmt.Errorf("invalid bit rate: %s: %w", s, err)
 	}
 	return v, nil
 }
@@ -551,7 +552,7 @@ func ParseBitRate(s string) (BitRate, error) {
 func ParseBitRateBinary(s string) (BitRate, error) {
 	var v BitRate
 	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
-		return 0, fmt.Errorf("invalid bit rate: %s", s)
+		return 0, fmt.Errorf("invalid bit rate: %s: %w", s, err)
 	}
 	return v, nil
 }
