@@ -31,7 +31,7 @@ func TestBitCount_String(t *testing.T) {
 
 	for _, c := range tc {
 		s := c.b.String()
-		// t.Logf(`%d: %s"`, c.b, s)
+		// t.Logf(`%d: %s`, c.b, s)
 		if s != c.s {
 			t.Errorf(`%d: want: %s, got: %s`, c.b, c.s, s)
 		}
@@ -54,7 +54,7 @@ func TestBitCount_GoString(t *testing.T) {
 
 	for _, c := range tc {
 		s := c.b.GoString()
-		// t.Logf(`%d: %s"`, c.b, s)
+		// t.Logf(`%d: %s`, c.b, s)
 		if s != c.s {
 			t.Errorf(`%d: want: %s, got: %s`, c.b, c.s, s)
 		}
@@ -112,7 +112,7 @@ func TestBitCount_CalcTime(t *testing.T) {
 
 	for _, c := range tc {
 		tm, err := c.b.CalcTime(c.r)
-		// t.Logf(`%v in %v: %s, %s"`, c.b, c.r, tm, err)
+		// t.Logf(`%v in %v: %s, %s`, c.b, c.r, tm, err)
 		if err != c.err {
 			t.Errorf(`%v in %v: want(err): %s, got(err): %s`, c.b, c.r, c.err, err)
 		}
@@ -141,7 +141,7 @@ func TestBitCount_CalcBitRate(t *testing.T) {
 
 	for _, c := range tc {
 		rate := c.b.CalcBitRate(c.t)
-		// t.Logf(`%v in %v: %v"`, c.b, c.t, rate)
+		// t.Logf(`%v in %v: %v`, c.b, c.t, rate)
 		switch {
 		case c.r.IsInf(+1) && !rate.IsInf(+1):
 			t.Errorf(`%v in %v: want: %v, got: %v`, c.b, c.t, c.r, rate)
@@ -158,28 +158,26 @@ func TestParseBitCount(t *testing.T) {
 	tc := []struct {
 		s string
 		b infounit.BitCount
-		e string
+		e bool
 	}{
-		{"", 0, "invalid bit count: "},
-		{"1bit", 1, ""},
-		{"9 bit", 9, ""},
-		{"1.23 kbit", 1230, ""},
-		{"-1 kbit", 0, "invalid bit count: -1 kbit"},
+		{"", 0, true},
+		{"1bit", 1, false},
+		{"9 bit", 9, false},
+		{"1.23 kbit", 1230, false},
+		{"-1 kbit", 0, true},
 	}
 
 	for _, c := range tc {
 		bc, err := infounit.ParseBitCount(c.s)
-		// t.Logf(`%s: %v, %v"`, c.s, bc, err)
+		// t.Logf(`%s: %v, %v`, c.s, bc, err)
 		switch {
-		case c.e != "" && err == nil:
-			t.Errorf(`%s: want(err): %s, got(err): nil"`, c.s, c.e)
-		case c.e != "" && err.Error() != c.e:
-			t.Errorf(`%s: want(err): %s, got(err): %v"`, c.s, c.e, err)
-		case c.e == "" && err != nil:
-			t.Errorf(`%s: want(err): nil, got(err): %v"`, c.s, err)
+		case c.e && err == nil:
+			t.Errorf(`%s: error expected, but nil error.`, c.s)
+		case !c.e && err != nil:
+			t.Errorf(`%s: unexpected error: %v`, c.s, err)
 		}
 		if bc != c.b {
-			t.Errorf(`%s: want: %d, got: %d"`, c.s, c.b, bc)
+			t.Errorf(`%s: want: %d, got: %d`, c.s, c.b, bc)
 		}
 	}
 }
@@ -191,29 +189,27 @@ func TestParseBitCountBinary(t *testing.T) {
 	tc := []struct {
 		s string
 		b infounit.BitCount
-		e string
+		e bool
 	}{
-		{"", 0, "invalid bit count: "},
-		{"1bit", 1, ""},
-		{"9 bit", 9, ""},
-		{"1 kbit", 1024, ""},
-		{"1.5 kbit", 1536, ""},
-		{"-1 kbit", 0, "invalid bit count: -1 kbit"},
+		{"", 0, true},
+		{"1bit", 1, false},
+		{"9 bit", 9, false},
+		{"1 kbit", 1024, false},
+		{"1.5 kbit", 1536, false},
+		{"-1 kbit", 0, true},
 	}
 
 	for _, c := range tc {
 		bc, err := infounit.ParseBitCountBinary(c.s)
-		// t.Logf(`%s: %v, %v"`, c.s, bc, err)
+		// t.Logf(`%s: %v, %v`, c.s, bc, err)
 		switch {
-		case c.e != "" && err == nil:
-			t.Errorf(`%s: want(err): %s, got(err): nil"`, c.s, c.e)
-		case c.e != "" && err.Error() != c.e:
-			t.Errorf(`%s: want(err): %s, got(err): %v"`, c.s, c.e, err)
-		case c.e == "" && err != nil:
-			t.Errorf(`%s: want(err): nil, got(err): %v"`, c.s, err)
+		case c.e && err == nil:
+			t.Errorf(`%s: error expected, but nil error.`, c.s)
+		case !c.e && err != nil:
+			t.Errorf(`%s: unexpected error: %v`, c.s, err)
 		}
 		if bc != c.b {
-			t.Errorf(`%s: want: %d, got: %d"`, c.s, c.b, bc)
+			t.Errorf(`%s: want: %d, got: %d`, c.s, c.b, bc)
 		}
 	}
 }

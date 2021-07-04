@@ -232,9 +232,7 @@ const (
 //
 // See the package fmt documentation for details.
 func (bc ByteCount) Format(s fmt.State, verb rune) {
-
 	switch verb {
-
 	case 's', 'S':
 		tFmt := "%"
 		if s.Flag(int('-')) {
@@ -271,7 +269,7 @@ func (bc ByteCount) Format(s fmt.State, verb rune) {
 
 	case 'b', 'd', 'o', 'x', 'X':
 		tFmt := "%"
-		for _, flag := range []rune{' ', '#', '+', '-', '0'} {
+		for _, flag := range " #+-0" {
 			// fmt.Printf("FLAG[%c]\n", flag)
 			if s.Flag(int(flag)) {
 				tFmt += string(flag)
@@ -287,7 +285,6 @@ func (bc ByteCount) Format(s fmt.State, verb rune) {
 
 	default:
 		fmt.Fprintf(s, "%%!%c(ByteCount=%d)", verb, uint64(bc))
-
 	}
 }
 
@@ -371,7 +368,6 @@ func init() {
 func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 	// fmt.Printf("**scan[%c]**\n", verb)
 	switch verb {
-
 	case 'b', 'd', 'o', 'x', 'X':
 		tFmt := "%"
 		if wid, ok := state.Width(); ok {
@@ -454,7 +450,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 			}
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 			}
 			*ptr = numVal
 			return nil
@@ -463,7 +459,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 		if isInt { // integer
 			numVal, err := strconv.ParseUint(numExpr, 10, 64)
 			if err != nil {
-				return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+				return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 			}
 			for _, unit := range byteCountScanUnitRe {
 				if unit.re.MatchString(unitExpr) {
@@ -482,7 +478,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 		// float
 		numVal, err := strconv.ParseFloat(numExpr, 64)
 		if err != nil {
-			return fmt.Errorf("%%%c: invalid byte count: %s: %s", verb, numExpr, err)
+			return fmt.Errorf("%%%c: invalid byte count: %s: %w", verb, numExpr, err)
 		}
 		for _, unit := range byteCountScanUnitRe {
 			if unit.re.MatchString(unitExpr) {
@@ -499,7 +495,6 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 
 	default:
 		return fmt.Errorf("unknown verb for ByteCount: %%%c", verb)
-
 	}
 	return nil
 }
@@ -510,7 +505,7 @@ func (bc *ByteCount) Scan(state fmt.ScanState, verb rune) error {
 func ParseByteCount(s string) (ByteCount, error) {
 	var v ByteCount
 	if _, err := fmt.Sscanf(s, "%s", &v); err != nil {
-		return 0, fmt.Errorf("invalid byte count: %s", s)
+		return 0, fmt.Errorf("invalid byte count: %s: %w", s, err)
 	}
 	return v, nil
 }
@@ -521,7 +516,7 @@ func ParseByteCount(s string) (ByteCount, error) {
 func ParseByteCountBinary(s string) (ByteCount, error) {
 	var v ByteCount
 	if _, err := fmt.Sscanf(s, "%S", &v); err != nil {
-		return 0, fmt.Errorf("invalid byte count: %s", s)
+		return 0, fmt.Errorf("invalid byte count: %s: %w", s, err)
 	}
 	return v, nil
 }
