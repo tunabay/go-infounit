@@ -230,9 +230,7 @@ const (
 //
 // See the package fmt documentation for details.
 func (bc BitCount) Format(s fmt.State, verb rune) {
-
 	switch verb {
-
 	case 's', 'S':
 		tFmt := "%"
 		if s.Flag(int('-')) {
@@ -285,7 +283,6 @@ func (bc BitCount) Format(s fmt.State, verb rune) {
 
 	default:
 		fmt.Fprintf(s, "%%!%c(BitCount=%d)", verb, uint64(bc))
-
 	}
 }
 
@@ -369,7 +366,6 @@ func init() {
 func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 	// fmt.Printf("**scan[%c]**\n", verb)
 	switch verb {
-
 	case 'b', 'd', 'o', 'x', 'X':
 		tFmt := "%"
 		if wid, ok := state.Width(); ok {
@@ -495,7 +491,6 @@ func (bc *BitCount) Scan(state fmt.ScanState, verb rune) error {
 
 	default:
 		return fmt.Errorf("unknown verb for BitCount: %%%c", verb)
-
 	}
 	return nil
 }

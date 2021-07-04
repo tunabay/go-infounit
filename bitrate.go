@@ -238,9 +238,7 @@ const (
 //
 // See the package fmt documentation for details.
 func (br BitRate) Format(s fmt.State, verb rune) {
-
 	switch verb {
-
 	case 's', 'S', 'a', 'A':
 		tFmt := "%"
 		if s.Flag(int('-')) {
@@ -301,7 +299,6 @@ func (br BitRate) Format(s fmt.State, verb rune) {
 
 	default:
 		fmt.Fprintf(s, "%%!%c(BitRate=%f)", verb, float64(br))
-
 	}
 }
 
@@ -401,7 +398,6 @@ func init() {
 func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 	// fmt.Printf("**scan[%c]**\n", verb)
 	switch verb {
-
 	case 'f', 'F':
 		tFmt := "%"
 		if wid, ok := state.Width(); ok {
@@ -534,7 +530,6 @@ func (br *BitRate) Scan(state fmt.ScanState, verb rune) error {
 
 	default:
 		return fmt.Errorf("unknown verb for BitRate: %%%c", verb)
-
 	}
 	return nil
 }

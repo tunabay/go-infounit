@@ -46,7 +46,7 @@ var (
 	}
 )
 
-// formatUint is used by both ByteCount and BitCount
+// formatUint is used by both ByteCount and BitCount.
 func (p *prefix) formatUint(v uint64, precision int, full, space bool, uAbbr, uFull string) string {
 	pre, unit, pls := p.preAbbr, uAbbr, ""
 	if full {
@@ -78,7 +78,7 @@ func (p *prefix) formatUint(v uint64, precision int, full, space bool, uAbbr, uF
 	return ret
 }
 
-// formatFloat is used by ByteRate
+// formatFloat is used by ByteRate.
 func (p *prefix) formatFloat(v float64, precision int, full, space bool, uAbbr, sufAbbr string) string {
 	pre, unit, pls, suf := p.preAbbr, uAbbr, "", sufAbbr
 	if full {
