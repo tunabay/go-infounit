@@ -190,7 +190,7 @@ func (br *BitRate) MarshalYAML() (interface{}, error) {
 func (br *BitRate) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var f64 float64
 	if unmarshal(&f64) == nil {
-		*br = BitRate(f64)
+		AtomicStoreBitRate(br, BitRate(f64))
 
 		return nil
 	}
@@ -201,7 +201,7 @@ func (br *BitRate) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err != nil {
 			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
 		}
-		*br = v
+		AtomicStoreBitRate(br, v)
 
 		return nil
 	}

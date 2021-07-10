@@ -190,7 +190,7 @@ func (bc *ByteCount) MarshalYAML() (interface{}, error) {
 func (bc *ByteCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var u64 uint64
 	if unmarshal(&u64) == nil {
-		*bc = ByteCount(u64)
+		AtomicStoreByteCount(bc, ByteCount(u64))
 
 		return nil
 	}
@@ -201,7 +201,7 @@ func (bc *ByteCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err != nil {
 			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
 		}
-		*bc = v
+		AtomicStoreByteCount(bc, v)
 
 		return nil
 	}

@@ -188,7 +188,7 @@ func (bc *BitCount) MarshalYAML() (interface{}, error) {
 func (bc *BitCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var u64 uint64
 	if unmarshal(&u64) == nil {
-		*bc = BitCount(u64)
+		AtomicStoreBitCount(bc, BitCount(u64))
 
 		return nil
 	}
@@ -199,7 +199,7 @@ func (bc *BitCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if err != nil {
 			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
 		}
-		*bc = v
+		AtomicStoreBitCount(bc, v)
 
 		return nil
 	}
