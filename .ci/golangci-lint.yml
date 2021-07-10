@@ -26,8 +26,6 @@ linters:
     - forcetypeassert
     - goconst
     - gocritic
-    - godot
-    - goerr113
     - gofmt
     - gofumpt
     - goimports
@@ -38,12 +36,14 @@ linters:
     - importas
     - misspell
     - nakedret
+    - noctx
     - nolintlint
     - prealloc
     - revive
     - rowserrcheck
     - sqlclosecheck
     - stylecheck
+    - testpackage
     - unconvert
     - unparam
     - wastedassign
