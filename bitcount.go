@@ -179,6 +179,39 @@ func (bc *BitCount) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// MarshalYAML encodes the BitCount value into a uint64 for a YAML field.
+func (bc *BitCount) MarshalYAML() (interface{}, error) {
+	return uint64(AtomicLoadBitCount(bc)), nil
+}
+
+// UnmarshalYAML decodes the BitCount value from a YAML field.
+func (bc *BitCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var u64 uint64
+	if unmarshal(&u64) == nil {
+		*bc = BitCount(u64)
+
+		return nil
+	}
+
+	var s string
+	if unmarshal(&s) == nil {
+		v, err := ParseBitCount(s)
+		if err != nil {
+			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
+		}
+		*bc = v
+
+		return nil
+	}
+
+	return fmt.Errorf("%w: unexpected type", ErrMalformedRepresentation)
+}
+
+// IsZero returns whether the BitCount value is zero.
+func (bc BitCount) IsZero() bool {
+	return bc == 0
+}
+
 //
 const (
 	unitBitFull = "bit"

@@ -13,3 +13,7 @@ var ErrOutOfRange = errors.New("out of range")
 
 // ErrDivZeroBitRate is the error thrown when trying to divide by zero bit rate.
 var ErrDivZeroBitRate = errors.New("division by zero bit rate")
+
+// ErrMalformedRepresentation is the error thrown when trying to conver
+// a malformed string representation.
+var ErrMalformedRepresentation = errors.New("malformed representation")

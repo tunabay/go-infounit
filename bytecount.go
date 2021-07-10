@@ -181,6 +181,39 @@ func (bc *ByteCount) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// MarshalYAML encodes the ByteCount value into a string for a YAML field.
+func (bc *ByteCount) MarshalYAML() (interface{}, error) {
+	return uint64(AtomicLoadByteCount(bc)), nil
+}
+
+// UnmarshalYAML decodes the ByteCount value from a YAML field.
+func (bc *ByteCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var u64 uint64
+	if unmarshal(&u64) == nil {
+		*bc = ByteCount(u64)
+
+		return nil
+	}
+
+	var s string
+	if unmarshal(&s) == nil {
+		v, err := ParseByteCount(s)
+		if err != nil {
+			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
+		}
+		*bc = v
+
+		return nil
+	}
+
+	return fmt.Errorf("%w: unexpected type", ErrMalformedRepresentation)
+}
+
+// IsZero returns whether the ByteCount value is zero.
+func (bc ByteCount) IsZero() bool {
+	return bc == 0
+}
+
 //
 const (
 	unitByteFull = "byte"

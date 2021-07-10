@@ -181,6 +181,39 @@ func (br *BitRate) UnmarshalText(text []byte) error {
 	return nil
 }
 
+// MarshalYAML encodes the BitRate value into a float64 for a YAML field.
+func (br *BitRate) MarshalYAML() (interface{}, error) {
+	return float64(AtomicLoadBitRate(br)), nil
+}
+
+// UnmarshalYAML decodes the BitRate value from a YAML field.
+func (br *BitRate) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var f64 float64
+	if unmarshal(&f64) == nil {
+		*br = BitRate(f64)
+
+		return nil
+	}
+
+	var s string
+	if unmarshal(&s) == nil {
+		v, err := ParseBitRate(s)
+		if err != nil {
+			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
+		}
+		*br = v
+
+		return nil
+	}
+
+	return fmt.Errorf("%w: unexpected type", ErrMalformedRepresentation)
+}
+
+// IsZero returns whether the BitRate value is zero.
+func (br BitRate) IsZero() bool {
+	return br == 0
+}
+
 //
 const (
 	unitBitRateFull       = unitBitFull
