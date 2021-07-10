@@ -5,11 +5,11 @@
 package infounit
 
 import (
-	"fmt"
+	"errors"
 )
 
 // ErrOutOfRange is the error thrown when the result exceeds the range.
-var ErrOutOfRange = fmt.Errorf("out of range")
+var ErrOutOfRange = errors.New("out of range")
 
 // ErrDivZeroBitRate is the error thrown when trying to divide by zero bit rate.
-var ErrDivZeroBitRate = fmt.Errorf("division by zero bit rate")
+var ErrDivZeroBitRate = errors.New("division by zero bit rate")
