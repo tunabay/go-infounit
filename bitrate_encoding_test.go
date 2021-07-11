@@ -7,6 +7,7 @@ package infounit_test
 import (
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
 	"math"
 	"strings"
 	"testing"
@@ -285,5 +286,69 @@ func TestBitRate_UnmarshalYAML(t *testing.T) {
 		t.Errorf("VarExprs[1]: unexpected value: got: %v, want: %v", v.VarExprs[1], infounit.MegabitPerSecond*345)
 	case v.VarExprs[2] != infounit.GigabitPerSecond/10*678:
 		t.Errorf("VarExprs[2]: unexpected value: got: %v, want: %v", v.VarExprs[2], infounit.GigabitPerSecond/10*678)
+	}
+}
+
+func TestBitRate_MarshalJSON(t *testing.T) {
+	var x, y, z infounit.BitRate = 777.777, 888.888, 999.999
+	tc := []struct {
+		j interface{}
+		s string
+	}{
+		{j: infounit.BitRate(123.456), s: `123.456`},
+		{j: []infounit.BitRate{0.123, 45.6, 789}, s: `[0.123,45.6,789]`},
+		{j: []*infounit.BitRate{&x, &y, &z, nil}, s: `[777.777,888.888,999.999,null]`},
+		{j: &struct {
+			BR infounit.BitRate `json:"xx"`
+		}{BR: 987.654}, s: `{"xx":987.654}`},
+	}
+	for _, c := range tc {
+		b, err := json.Marshal(c.j)
+		if err != nil {
+			t.Errorf("%v: json.Marshal() failed: %v", c.j, err)
+			continue
+		}
+		if s := string(b); s != c.s {
+			t.Errorf("unexpected JSON output: want: %q, got: %q", c.s, s)
+		}
+	}
+}
+
+func TestBitRate_UnmarshalJSON(t *testing.T) {
+	tc := []struct {
+		s string
+		v infounit.BitRate
+		n bool
+	}{
+		{s: `12345`, v: 12345},
+		{s: `0.12345`, v: 0.12345},
+		{s: `123.45678`, v: 123.45678},
+		{s: `456789000`, v: 456789000},
+		{s: `"123 kbit/s"`, v: infounit.KilobitPerSecond * 123},
+		{s: `"456Mbit/s"`, v: infounit.MegabitPerSecond * 456},
+		{s: `"789 gigabits per second"`, v: infounit.GigabitPerSecond * 789},
+		{s: `"123.456 kbps"`, v: infounit.KilobitPerSecond / 1000 * 123456},
+		{s: `"456.789Mbps"`, v: infounit.MegabitPerSecond / 1000 * 456789},
+		{s: `null`, n: true},
+	}
+	for _, c := range tc {
+		js := "[" + c.s + "]"
+		var bca []*infounit.BitRate
+		if err := json.Unmarshal([]byte(js), &bca); err != nil {
+			t.Errorf("%v: json.Unmarshal() failed: %v", c.s, err)
+			continue
+		}
+		if len(bca) != 1 {
+			t.Errorf("unexpected JSON output len: want: 1, got: %d", len(bca))
+		}
+		bcp := bca[0]
+		switch {
+		case !c.n && bcp == nil:
+			t.Errorf("%q: unexpected output: want: %v, got: <nil>", c.s, c.v)
+		case c.n && bcp != nil:
+			t.Errorf("%q: unexpected output: want: <nil>, got: %v", c.s, *bcp)
+		case !c.n && *bcp != c.v:
+			t.Errorf("%q: unexpected output: want: %v, got: %v", c.s, c.v, *bcp)
+		}
 	}
 }

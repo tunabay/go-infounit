@@ -6,6 +6,7 @@ package infounit
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"math"
 	"regexp"
@@ -212,6 +213,38 @@ func (bc *ByteCount) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // IsZero returns whether the ByteCount value is zero.
 func (bc ByteCount) IsZero() bool {
 	return bc == 0
+}
+
+// MarshalJSON encodes the ByteCount value into a string for a JSON field.
+func (bc *ByteCount) MarshalJSON() ([]byte, error) {
+	return json.Marshal(AtomicLoadByteCount(bc))
+}
+
+// UnmarshalJSON decodes the ByteCount value from a JSON field.
+func (bc *ByteCount) UnmarshalJSON(b []byte) error {
+	if string(b) == jsonNULL {
+		return nil
+	}
+
+	var u64 uint64
+	if json.Unmarshal(b, &u64) == nil {
+		AtomicStoreByteCount(bc, ByteCount(u64))
+
+		return nil
+	}
+
+	var s string
+	if json.Unmarshal(b, &s) == nil {
+		v, err := ParseByteCount(s)
+		if err != nil {
+			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
+		}
+		AtomicStoreByteCount(bc, v)
+
+		return nil
+	}
+
+	return fmt.Errorf("%w: unexpected type", ErrMalformedRepresentation)
 }
 
 //

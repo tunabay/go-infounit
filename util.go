@@ -112,3 +112,6 @@ func (p *prefix) formatFloat(v float64, precision int, full, space bool, uAbbr, 
 	}
 	return ret
 }
+
+// jsonNULL is the null expression in JSON.
+const jsonNULL = "null"

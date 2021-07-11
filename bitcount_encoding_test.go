@@ -7,6 +7,7 @@ package infounit_test
 import (
 	"bytes"
 	"encoding/hex"
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -258,4 +259,64 @@ func TestBitCount_UnmarshalYAML(t *testing.T) {
 	}
 
 	// t.Logf("%+v\n", v)
+}
+
+func TestBitCount_MarshalJSON(t *testing.T) {
+	var x, y, z infounit.BitCount = 777, 888, 999
+	tc := []struct {
+		j interface{}
+		s string
+	}{
+		{j: infounit.BitCount(1234), s: `1234`},
+		{j: []infounit.BitCount{123, 456, 789}, s: `[123,456,789]`},
+		{j: []*infounit.BitCount{&x, &y, &z, nil}, s: `[777,888,999,null]`},
+		{j: &struct {
+			BC infounit.BitCount `json:"xx"`
+		}{BC: 987}, s: `{"xx":987}`},
+	}
+	for _, c := range tc {
+		b, err := json.Marshal(c.j)
+		if err != nil {
+			t.Errorf("%v: json.Marshal() failed: %v", c.j, err)
+			continue
+		}
+		if s := string(b); s != c.s {
+			t.Errorf("unexpected JSON output: want: %q, got: %q", c.s, s)
+		}
+	}
+}
+
+func TestBitCount_UnmarshalJSON(t *testing.T) {
+	tc := []struct {
+		s string
+		v infounit.BitCount
+		n bool
+	}{
+		{s: `12345`, v: 12345},
+		{s: `4567890`, v: 4567890},
+		{s: `"123 kbit"`, v: infounit.Kilobit * 123},
+		{s: `"456Mbit"`, v: infounit.Megabit * 456},
+		{s: `"789 gigabits"`, v: infounit.Gigabit * 789},
+		{s: `null`, n: true},
+	}
+	for _, c := range tc {
+		js := "[" + c.s + "]"
+		var bca []*infounit.BitCount
+		if err := json.Unmarshal([]byte(js), &bca); err != nil {
+			t.Errorf("%v: json.Unmarshal() failed: %v", c.s, err)
+			continue
+		}
+		if len(bca) != 1 {
+			t.Errorf("unexpected JSON output len: want: 1, got: %d", len(bca))
+		}
+		bcp := bca[0]
+		switch {
+		case !c.n && bcp == nil:
+			t.Errorf("%q: unexpected output: want: %v, got: <nil>", c.s, c.v)
+		case c.n && bcp != nil:
+			t.Errorf("%q: unexpected output: want: <nil>, got: %v", c.s, *bcp)
+		case !c.n && *bcp != c.v:
+			t.Errorf("%q: unexpected output: want: %v, got: %v", c.s, c.v, *bcp)
+		}
+	}
 }

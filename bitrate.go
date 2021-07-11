@@ -6,6 +6,7 @@ package infounit
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -212,6 +213,38 @@ func (br *BitRate) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // IsZero returns whether the BitRate value is zero.
 func (br BitRate) IsZero() bool {
 	return br == 0
+}
+
+// MarshalJSON encodes the BitRate value into a string for a JSON field.
+func (br *BitRate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(AtomicLoadBitRate(br))
+}
+
+// UnmarshalJSON decodes the BitRate value from a JSON field.
+func (br *BitRate) UnmarshalJSON(b []byte) error {
+	if string(b) == jsonNULL {
+		return nil
+	}
+
+	var f64 float64
+	if json.Unmarshal(b, &f64) == nil {
+		AtomicStoreBitRate(br, BitRate(f64))
+
+		return nil
+	}
+
+	var s string
+	if json.Unmarshal(b, &s) == nil {
+		v, err := ParseBitRate(s)
+		if err != nil {
+			return fmt.Errorf("%q: %w: %v", s, ErrMalformedRepresentation, err)
+		}
+		AtomicStoreBitRate(br, v)
+
+		return nil
+	}
+
+	return fmt.Errorf("%w: unexpected type", ErrMalformedRepresentation)
 }
 
 //
