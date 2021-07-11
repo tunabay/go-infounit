@@ -1,9 +1,7 @@
 # go-infounit
 
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/tunabay/go-infounit/blob/master/LICENSE)
-[![GoDoc](https://godoc.org/github.com/tunabay/go-infounit?status.svg)](https://godoc.org/github.com/tunabay/go-infounit)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tunabay/go-infounit)](https://goreportcard.com/report/github.com/tunabay/go-infounit)
-[![codecov](https://codecov.io/gh/tunabay/go-infounit/branch/master/graph/badge.svg)](https://codecov.io/gh/tunabay/go-infounit)
+[![Go Reference](https://pkg.go.dev/badge/github.com/tunabay/go-infounit.svg)](https://pkg.go.dev/github.com/tunabay/go-infounit)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 go-infounit is a Go package providing three data types for units of information:
 
