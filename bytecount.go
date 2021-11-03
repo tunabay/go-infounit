@@ -122,8 +122,8 @@ func AtomicSubByteCount(addr *ByteCount, delta ByteCount) ByteCount {
 // AtomicCompareAndSwapByteCount atomically executes the compare-and-swap
 // operation for a ByteCount value. A wrapper function for the
 // package sync/atomic.
-func AtomicCompareAndSwapByteCount(addr *ByteCount, old, new ByteCount) bool {
-	return atomic.CompareAndSwapUint64((*uint64)(addr), uint64(old), uint64(new))
+func AtomicCompareAndSwapByteCount(addr *ByteCount, old, val ByteCount) bool {
+	return atomic.CompareAndSwapUint64((*uint64)(addr), uint64(old), uint64(val))
 }
 */
 
@@ -133,16 +133,16 @@ func AtomicLoadByteCount(addr *ByteCount) ByteCount {
 	return ByteCount(atomic.LoadUint64((*uint64)(addr)))
 }
 
-// AtomicStoreByteCount atomically store val into *addr. A wrapper function for
+// AtomicStoreByteCount atomically stores val into *addr. A wrapper function for
 // the package sync/atomic.
 func AtomicStoreByteCount(addr *ByteCount, val ByteCount) {
 	atomic.StoreUint64((*uint64)(addr), uint64(val))
 }
 
-// AtomicSwapByteCount atomically stores new into *addr and returns the previous
+// AtomicSwapByteCount atomically stores val into *addr and returns the previous
 // *addr value. A wrapper function for the package sync/atomic.
-func AtomicSwapByteCount(addr *ByteCount, new ByteCount) ByteCount {
-	return ByteCount(atomic.SwapUint64((*uint64)(addr), uint64(new)))
+func AtomicSwapByteCount(addr *ByteCount, val ByteCount) ByteCount {
+	return ByteCount(atomic.SwapUint64((*uint64)(addr), uint64(val)))
 }
 
 // MarshalBinary encodes the ByteCount value into a binary form and returns the
