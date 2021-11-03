@@ -3,6 +3,8 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/tunabay/go-infounit.svg)](https://pkg.go.dev/github.com/tunabay/go-infounit)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
+## Overview
+
 go-infounit is a Go package providing three data types for units of information:
 
 - `ByteCount` - number of bytes with both SI and binary prefixes
