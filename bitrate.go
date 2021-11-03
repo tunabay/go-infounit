@@ -132,16 +132,21 @@ func AtomicLoadBitRate(addr *BitRate) BitRate {
 	return BitRate(math.Float64frombits(atomic.LoadUint64((*uint64)(unsafe.Pointer(addr)))))
 }
 
-// AtomicStoreBitRate atomically store val into *addr. A wrapper function for
+// AtomicStoreBitRate atomically stores val into *addr. A wrapper function for
 // the package sync/atomic.
 func AtomicStoreBitRate(addr *BitRate, val BitRate) {
 	atomic.StoreUint64((*uint64)(unsafe.Pointer(addr)), math.Float64bits(float64(val)))
 }
 
-// AtomicSwapBitRate atomically stores new into *addr and returns the previous
+// AtomicSwapBitRate atomically stores val into *addr and returns the previous
 // *addr value. A wrapper function for the package sync/atomic.
-func AtomicSwapBitRate(addr *BitRate, new BitRate) BitRate {
-	return BitRate(math.Float64frombits(atomic.SwapUint64((*uint64)(unsafe.Pointer(addr)), math.Float64bits(float64(new)))))
+func AtomicSwapBitRate(addr *BitRate, val BitRate) BitRate {
+	return BitRate(math.Float64frombits(
+		atomic.SwapUint64(
+			(*uint64)(unsafe.Pointer(addr)),
+			math.Float64bits(float64(val)),
+		),
+	))
 }
 
 // MarshalBinary encodes the BitRate value into a binary form and returns the
